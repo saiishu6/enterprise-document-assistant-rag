@@ -43,16 +43,30 @@ public class RagChatService {
             );
         }
         List<String> sources = matches.stream()
-              //  .filter(match -> match.score() >= 0.70)
+                //  .filter(match -> match.score() >= 0.70)
                 .map(match -> match.embedded()
                         .metadata().getString("file_name"))
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();
+
         String prompt = """
-                Answer the question using only the context below.
-                If the context does not contain the answer,
-                say that the information is not available.
+                Answer the user's question using only the document context.
+                
+                First identify the specific entity or topic being asked about.
+                Select only facts that directly relate to that entity or topic.
+                
+                A retrieved passage may contain information about several
+                different entities. Do not assume that information about
+                one entity also applies to another entity.
+                
+                Consolidate relevant facts from the context into a clear,
+                coherent answer. Do not summarize unrelated information.
+                
+                If only limited information is available, answer using
+                those facts and acknowledge the missing details.
+                
+                If no relevant information is available, say so.
                 Do not use outside knowledge.
                 
                 Context:
@@ -62,8 +76,5 @@ public class RagChatService {
                 %s
                 """.formatted(context, question);
 
-        String answer = assistant.chat(prompt);
-
-        return new ChatResponse(answer, sources);
     }
 }
