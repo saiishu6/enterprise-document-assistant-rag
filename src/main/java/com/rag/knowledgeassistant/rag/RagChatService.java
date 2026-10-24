@@ -32,7 +32,7 @@ public class RagChatService {
                 retrievalService.search(question);
 
         String context = matches.stream()
-                .filter(match -> match.score() >= 0.70)
+                //.filter(match -> match.score() >= 0.70)
                 .map(match -> match.embedded().text())
                 .collect(Collectors.joining("\n\n"));
 
