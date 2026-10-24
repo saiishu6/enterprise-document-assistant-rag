@@ -43,7 +43,7 @@ public class RagChatService {
             );
         }
         List<String> sources = matches.stream()
-                .filter(match -> match.score() >= 0.70)
+              //  .filter(match -> match.score() >= 0.70)
                 .map(match -> match.embedded()
                         .metadata().getString("file_name"))
                 .filter(Objects::nonNull)
