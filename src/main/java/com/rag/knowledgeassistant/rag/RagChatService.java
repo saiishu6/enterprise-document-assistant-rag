@@ -49,7 +49,6 @@ public class RagChatService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();
-
         String prompt = """
                 Answer the user's question using only the document context.
                 
@@ -76,5 +75,8 @@ public class RagChatService {
                 %s
                 """.formatted(context, question);
 
+        String answer = assistant.chat(prompt);
+
+        return new ChatResponse(answer, sources);
     }
 }
