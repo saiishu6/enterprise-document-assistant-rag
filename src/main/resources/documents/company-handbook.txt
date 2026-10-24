@@ -1,0 +1,9 @@
+Acme Technologies is headquartered in Munich.
+
+Employees receive 31 days of annual leave.
+
+The company provides an annual learning budget of 1,750 euros.
+
+Employees may work remotely three days per week.
+
+The internal engineering conference is called AcmeTech Day.

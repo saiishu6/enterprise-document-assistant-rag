@@ -1,0 +1,14 @@
+services:
+  rag-app:
+    image: rag-knowledge-assistant:1.0
+    ports:
+      - "9090:8080"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      QDRANT_HOST: qdrant
+    networks:
+      - rag-network
+
+networks:
+  rag-network:
+    external: true
