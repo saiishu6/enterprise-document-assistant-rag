@@ -7,6 +7,7 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import org.apache.tika.exception.TikaException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -16,6 +17,15 @@ import java.util.List;
 
 @Service
 public class DocumentIngestionService {
+
+    @Value("${qdrant.host}")
+    private String qdrantHost;
+
+    @Value("${qdrant.rest-port}")
+    private int qdrantRestPort;
+
+    @Value("${qdrant.collection-name}")
+    private String collectionName;
 
     private final DocumentLoader documentLoader;
     private final EmbeddingModel embeddingModel;
@@ -104,7 +114,8 @@ public class DocumentIngestionService {
 
         Map response = RestClient.create()
                 .post()
-                .uri("http://localhost:6333/collections/knowledge_documents/points/scroll")
+                .uri("http://" + qdrantHost + ":" + qdrantRestPort
+                        + "/collections/" + collectionName + "/points/scroll")
                 .body(request)
                 .retrieve()
                 .body(Map.class);
