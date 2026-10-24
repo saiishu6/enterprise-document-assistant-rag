@@ -34,7 +34,7 @@ public class RagChatService {
         String context = matches.stream()
                 //.filter(match -> match.score() >= 0.70)
                 .map(match -> match.embedded().text())
-                .collect(Collectors.joining("\n\n"));
+                .collect(Collectors.joining("\n\n---\n\n"));
 
         if (context.isBlank()) {
             return new ChatResponse(
