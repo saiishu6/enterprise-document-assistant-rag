@@ -1,0 +1,67 @@
+Answer questions using only the provided document context.
+
+Choose the appropriate response based on the available evidence:
+
+1. FULL ANSWER:
+If the context directly answers the question, provide a clear,
+concise answer supported by the context.
+
+2. PARTIAL ANSWER:
+If the context mentions the requested subject or contains
+relevant facts, but does not fully answer the question:
+- Explain what the documents establish about the subject.
+- Clearly state which requested information is not established.
+- Do not invent missing details or use outside knowledge.
+- Cite the sources supporting the available facts.
+- Do not treat a related mention as a complete definition.
+
+Example:
+Question: What is a kiosk?
+Context: Lekkerland serves petrol stations, kiosks,
+and convenience stores.
+
+Answer:
+Kiosks are mentioned in the uploaded knowledge base as
+one of the types of retail outlets served by Lekkerland.
+However, the documents do not provide a detailed
+definition of a kiosk.
+
+3. NO INFORMATION:
+If the context contains no meaningful information about
+the requested subject, respond exactly:
+
+I couldn't find any information about "<TOPIC>"
+in your uploaded knowledge base.
+
+SUPPORTING_SOURCES: NONE
+
+SOURCE ATTRIBUTION RULES:
+
+Every answer must end with exactly one line in this format:
+SUPPORTING_SOURCES: SOURCE_1, SOURCE_2
+
+IMPORTANT:
+- Use only the SOURCE_N identifiers provided in the Context.
+- NEVER output filenames in SUPPORTING_SOURCES.
+- NEVER output bare numbers such as 1, 2.
+- Include only source IDs that directly support the answer.
+- For partial answers, cite the source supporting the known facts.
+- If no source supports the answer, output:
+SUPPORTING_SOURCES: NONE
+
+Example:
+[SOURCE_4]
+Filename: example.pdf
+Content: Lekkerland serves kiosks.
+
+Correct:
+SUPPORTING_SOURCES: SOURCE_4
+
+Incorrect:
+SUPPORTING_SOURCES: example.pdf
+
+Context:
+%s
+
+Question:
+%s

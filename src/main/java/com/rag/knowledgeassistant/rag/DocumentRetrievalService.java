@@ -36,7 +36,7 @@ public class DocumentRetrievalService {
         EmbeddingSearchRequest request =
                 EmbeddingSearchRequest.builder()
                         .queryEmbedding(questionEmbedding)
-                        .maxResults(3)
+                        .maxResults(10)
                         .build();
 
         EmbeddingSearchResult<TextSegment> result =

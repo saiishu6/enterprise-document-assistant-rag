@@ -1,29 +1,27 @@
 
 package com.rag.knowledgeassistant.rag;
 
+import com.rag.knowledgeassistant.Component.RagPromptLoader;
 import com.rag.knowledgeassistant.ai.Assistant;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.data.segment.TextSegment;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.stream.Collectors;
-
 import com.rag.knowledgeassistant.dto.ChatResponse;
-
-import java.util.Objects;
 
 @Service
 public class RagChatService {
 
     private final DocumentRetrievalService retrievalService;
     private final Assistant assistant;
+    private final RagPromptLoader promptLoader;
 
     public RagChatService(
             DocumentRetrievalService retrievalService,
-            Assistant assistant) {
+            Assistant assistant, RagPromptLoader promptLoader) {
         this.retrievalService = retrievalService;
         this.assistant = assistant;
+        this.promptLoader = promptLoader;
     }
 
 
@@ -34,7 +32,7 @@ public class RagChatService {
 
         if (matches.isEmpty()) {
             return new ChatResponse(
-                    "I couldn't find relevant information in the uploaded documents.",
+                    "I couldn't find relevant information in your uploaded knowledge base.",
                     List.of()
             );
         }
@@ -58,33 +56,12 @@ public class RagChatService {
                     .append("Content:\n").append(segment.text())
                     .append("\n\n---\n\n");
         }
-
-        String prompt = """
-            Answer the question using only the provided document context.
-
-            Identify the specific entity or topic being asked about.
-            Use only facts directly relevant to the question.
-            Do not attribute information about one entity to another.
-            Do not use outside knowledge.
-
-            If the context does not support an answer, say so.
-
-            After your answer, output a separate line in this exact format:
-            SUPPORTING_SOURCES: SOURCE_1,SOURCE_2
-
-            Include only source IDs containing evidence that directly
-            supports your answer. Do not include unrelated sources.
-            If no source supports the answer, output:
-            SUPPORTING_SOURCES: NONE
-
-            Context:
-            %s
-
-            Question:
-            %s
-            """.formatted(context, question);
+        String systemPrompt = promptLoader.getSystemPrompt();
+        String prompt = systemPrompt.formatted(context, question);
 
         String result = assistant.chat(prompt);
+
+        System.out.println("RAW LLM RESPONSE:\n" + result);
 
         // Extract the supporting source IDs from the LLM response.
         java.util.regex.Matcher matcher = java.util.regex.Pattern
@@ -98,9 +75,14 @@ public class RagChatService {
 
         String sourceLine = matcher.group(1).trim();
         String answer = result.substring(0, matcher.start()).trim();
-
+        if (answer.toLowerCase(java.util.Locale.ROOT)
+                .startsWith("i couldn't find any information about")) {
+            return new ChatResponse(answer, List.of());
+        }
         List<String> sources = java.util.Arrays.stream(sourceLine.split(","))
                 .map(String::trim)
+                .map(String::toUpperCase)
+                .map(id -> id.matches("[1-9][0-9]*") ? "SOURCE_" + id : id)
                 .filter(id -> id.matches("SOURCE_[1-9][0-9]*"))
                 .map(id -> Integer.parseInt(id.substring(7)) - 1)
                 .filter(index -> index >= 0 && index < filenames.size())
