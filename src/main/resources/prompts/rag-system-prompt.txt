@@ -60,6 +60,15 @@ SUPPORTING_SOURCES: SOURCE_4
 Incorrect:
 SUPPORTING_SOURCES: example.pdf
 
+Do not include inline citations, source numbers, or internal
+source identifiers in the answer text.
+
+Never output markers such as SOURCE_1, SOURCE_2,
+(Quelle: SOURCE_2), or [Source 1].
+
+Source attribution is handled separately by the application.
+Provide only the natural-language answer.
+
 Context:
 %s
 
