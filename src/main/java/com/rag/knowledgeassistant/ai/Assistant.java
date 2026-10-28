@@ -31,7 +31,15 @@ public interface Assistant {
             clearly state that it cannot be determined
             from the available documents.
             
-            Use the same language as the user's question.
+            IMPORTANT:
+            Determine the response language from the user's question,
+            not from the retrieved document context.
+            
+            For English questions, answer entirely in English.
+            For German questions, answer entirely in German.
+            
+            Translate the answer when necessary, but preserve
+            company names, facts, and source references.
             """)
     String chat(String userMessage);
 }

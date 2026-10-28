@@ -154,8 +154,22 @@ application.
 Provide only the natural-language answer followed
 by the required SUPPORTING_SOURCES line.
 
+
 Context:
 %s
 
 Question:
 %s
+
+FINAL RESPONSE LANGUAGE RULE:
+Determine the response language ONLY from the text
+following "Question:" above.
+
+Ignore the language of the retrieved context when
+choosing the response language.
+
+Translate the answer into the question's language.
+Preserve proper nouns and source filenames unchanged.
+
+This rule applies even when all retrieved documents
+are written in another language.
